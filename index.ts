@@ -2,12 +2,17 @@ import express from 'express';
 import cors from 'cors'
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import { createProduct,getProduct } from './model/product';
+import { porductModel,createProduct } from './model/product';
+import {cartModel,createCartProduct} from './model/cart';
+
+
+
 const app: express.Application = express();
 
 const port: number = 8000;
 const URI="mongodb+srv://sunitsarkar:LwP8bgRq3VOKlHWI@cluster0.gxschpx.mongodb.net/?retryWrites=true&w=majority";
-app.use(cors())
+
+app.use(cors());
 app.use(bodyParser.json());
 
 mongoose.Promise=Promise;
@@ -32,8 +37,27 @@ app.post('/', async (req: express.Request,res: express.Response)=>{
 });
 
 app.get('/',async (req:express.Request, res:express.Response)=>{
-    const product=await getProduct
-    return res.status(200).json(product)
+    const product=await porductModel.find()
+    return res.status(200).json(product).end();
+});
+
+
+//cart routers
+app.post('/cart', async (req: express.Request,res: express.Response)=>{
+    const {name,category,price,quantity,isBought}=req.body;
+    const cartProduct = await createCartProduct({
+        name,
+        category,
+        price,
+        quantity,
+        isBought
+      });
+      return res.status(201).json(cartProduct).end();
+});
+
+app.get('/cart',async (req:express.Request, res:express.Response)=>{
+    const cartProduct=await cartModel.find()
+    return res.status(200).json(cartProduct).end();
 })
 
 app.listen(port, () => {

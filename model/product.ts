@@ -9,4 +9,3 @@ const productSchema=new mongoose.Schema({
 export const porductModel=mongoose.model('Product',productSchema);
 
 export const createProduct = (values: Record<string, any>) => new porductModel(values).save().then((user) => user.toObject());
-export const getProduct=porductModel.find();
