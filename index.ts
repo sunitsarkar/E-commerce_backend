@@ -21,6 +21,9 @@ mongoose.connect(URI).then(()=>{
 });
 mongoose.connection.on('error',(error: Error)=> console.log(error))
 
+app.listen(port, () => {
+	console.log(`server is running on ${port}`);
+});
 // app.get('/', (_req, _res) => {
 // 	_res.send("TypeScript With Express");
 // });
@@ -60,6 +63,10 @@ app.get('/cart',async (req:express.Request, res:express.Response)=>{
     return res.status(200).json(cartProduct).end();
 })
 
-app.listen(port, () => {
-	console.log(`server is running on ${port}`);
+app.put('/cart', async (req: express.Request,res: express.Response)=>{
+    const id = req.query.id;
+    const {name,category,price,quantity,isBought}=req.body;
+
+    const updatedPorduct= await cartModel.findByIdAndUpdate(id, { name,category,price,quantity,isBought }, { new: true })
+    return res.status(200).json(updatedPorduct).end()
 });
